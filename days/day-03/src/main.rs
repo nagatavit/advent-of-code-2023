@@ -1,8 +1,10 @@
+use std::collections::HashMap;
+
 fn main() {
     // part1("advent-of-code-inputs/2023/day-03/example");
-    part1("advent-of-code-inputs/2023/day-03/input");
+    // part1("advent-of-code-inputs/2023/day-03/input");
     // part2("advent-of-code-inputs/2023/day-03/example");
-    // part2("advent-of-code-inputs/2023/day-03/input");
+    part2("advent-of-code-inputs/2023/day-03/input");
 }
 
 fn part1(file: &str) {
@@ -21,7 +23,38 @@ fn part1(file: &str) {
     println!("Sum of part numbers: {}", part_number.iter().sum::<u32>());
 }
 
-// fn part2(file: &str) {}
+fn part2(file: &str) {
+    let lines = utils::read_lines(file);
+    let engine_sch = parse_engine_schematic(lines);
+
+    let mut parts_near_gear: HashMap<(usize, usize), Vec<NumberPos>> = HashMap::new();
+
+    for number in &engine_sch.number_positions {
+        for gears in check_for_gear_adjacency(&engine_sch.sch, number) {
+            if let Some(near_parts) = parts_near_gear.get_mut(&gears) {
+                near_parts.push(*number);
+            } else {
+                parts_near_gear.insert(gears, vec![*number]);
+            }
+        }
+    }
+
+    let mut gear_ratios = Vec::new();
+
+    for (gear, parts) in parts_near_gear {
+        if parts.len() != 2 {
+            continue;
+        }
+        let gear_ratio: u32 = parts
+            .iter()
+            .map(|num| convert_num_to_u32(&engine_sch.sch, num))
+            .product();
+        gear_ratios.push(gear_ratio);
+        // println!("This gear: {:?} has a ratio of: {:?}", gear, gear_ratio);
+    }
+
+    println!("Sum of gear ratios: {}", gear_ratios.iter().sum::<u32>());
+}
 
 #[derive(Debug)]
 enum SchField {
@@ -30,7 +63,7 @@ enum SchField {
     Symbol(char),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 struct NumberPos {
     line: usize,
     col_span: (usize, usize),
@@ -96,6 +129,23 @@ fn check_if_symbol_is_adjacent(sch: &Vec<Vec<SchField>>, number_pos: &NumberPos)
     }
 
     false
+}
+
+fn check_for_gear_adjacency(
+    sch: &Vec<Vec<SchField>>,
+    number_pos: &NumberPos,
+) -> Vec<(usize, usize)> {
+    let mut near_gears = Vec::new();
+
+    for idx in indexes_around_number_pos(sch, number_pos) {
+        if let SchField::Symbol(sym) = sch[idx.0][idx.1] {
+            if sym == '*' {
+                near_gears.push((idx.0, idx.1))
+            }
+        }
+    }
+
+    near_gears
 }
 
 fn indexes_around_number_pos(
