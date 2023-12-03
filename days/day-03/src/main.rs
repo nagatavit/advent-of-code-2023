@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 fn main() {
-    // part1("advent-of-code-inputs/2023/day-03/example");
-    // part1("advent-of-code-inputs/2023/day-03/input");
-    // part2("advent-of-code-inputs/2023/day-03/example");
+    part1("advent-of-code-inputs/2023/day-03/example");
+    part1("advent-of-code-inputs/2023/day-03/input");
+    part2("advent-of-code-inputs/2023/day-03/example");
     part2("advent-of-code-inputs/2023/day-03/input");
 }
 
@@ -50,7 +50,7 @@ fn part2(file: &str) {
             .map(|num| convert_num_to_u32(&engine_sch.sch, num))
             .product();
         gear_ratios.push(gear_ratio);
-        // println!("This gear: {:?} has a ratio of: {:?}", gear, gear_ratio);
+        println!("This gear: {:?} has a ratio of: {:?}", gear, gear_ratio);
     }
 
     println!("Sum of gear ratios: {}", gear_ratios.iter().sum::<u32>());
@@ -190,7 +190,7 @@ fn indexes_around_number_pos(
     box_around_number
 }
 
-fn convert_num_to_u32(sch: &Vec<Vec<SchField>>, number_pos: &NumberPos) -> u32 {
+fn convert_num_to_u32(sch: &[Vec<SchField>], number_pos: &NumberPos) -> u32 {
     let mut partial_sum = 0;
 
     for val in &sch[number_pos.line][number_pos.col_span.0..=number_pos.col_span.1] {
