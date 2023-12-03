@@ -3,5 +3,6 @@ resolver = "2"
 members = [
     "days/day-01",
     "days/day-02",
+    "days/day-03",
     "days/utils",
 ]
