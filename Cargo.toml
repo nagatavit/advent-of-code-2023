@@ -8,5 +8,6 @@ members = [
     "days/day-05",
     "days/day-06",
     "days/day-07",
+    "days/day-08",
     "days/utils",
 ]
